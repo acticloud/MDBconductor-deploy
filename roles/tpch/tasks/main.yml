@@ -1,0 +1,45 @@
+---
+
+# Set up full TPC-H database
+
+- name: Stop any existing databases
+  become: yes
+  shell: pkill mserver5
+  register: kill_res
+  failed_when: kill_res.rc > 1
+
+- name: Prepare database
+  command: "./tpch_build.sh -s {{TPCH_SCALE_FACTOR}} -f {{DBFARM_BASEDIR}}"
+  args:
+    chdir: "{{TPCH_SCRIPTS_BASEDIR}}"
+
+- name: Get the command to start the database
+  shell: "./tpch_build.sh -d -s {{TPCH_SCALE_FACTOR}} -f {{DBFARM_BASEDIR}} | grep mserver5"
+  args:
+    chdir: "{{TPCH_SCRIPTS_BASEDIR}}"
+  register: START_DB_CMD
+  changed_when: False
+
+# - name: Start the database
+#   command: "mserver5 --dbpath={{TPCH_DBPATH}} --set mapi_open=true"
+#   async: 1
+#   poll: 0
+
+- name: Create a start script
+  copy:
+    dest: start-tpch.sh
+    mode: +x
+    content: "#!/bin/sh\n\n{{START_DB_CMD.stdout | trim}} --set mapi_port=50000 --set mapi_open=true\n"
+
+- name: Upload TPC-H systemd service
+  become: yes
+  template:
+    dest: /etc/systemd/system/tpch.service
+    src: tpch.service.in
+
+- name: Start the TPC-H systemd service
+  become: yes
+  systemd:
+    name: tpch
+    enabled: yes
+    state: restarted

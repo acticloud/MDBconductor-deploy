@@ -1,0 +1,5 @@
+deb https://dev.monetdb.org/downloads/deb/ {{ ansible_lsb.codename }} monetdb
+deb-src https://dev.monetdb.org/downloads/deb/ {{ ansible_lsb.codename }} monetdb
+
+#deb https://dev.monetdb.org/downloads/testing/deb/ {{ ansible_lsb.codename }} monetdb
+#deb-src https://dev.monetdb.org/downloads/testing/deb/ {{ ansible_lsb.codename }} monetdb

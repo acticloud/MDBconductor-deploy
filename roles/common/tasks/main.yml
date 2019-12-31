@@ -1,0 +1,53 @@
+---
+
+
+# Host name is nice to see in the prompt, log messages, etc.
+- name: Set the hostname
+  become: yes
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+# Used by the conductor script to find its minions
+- name: Upload .cluster_name
+  when: cluster_name is defined
+  copy:
+    dest: .cluster_name
+    content: "{{ cluster_name }}\n"
+
+
+# Put the ip numbers of the other hosts in
+# /etc/hosts so we can refer to them by name.
+- name: Fill /etc/hosts
+  when: private_ip is defined
+  become: yes
+  template:
+    src: templates/etc_hosts.in
+    dest: /etc/hosts
+
+# Create .monetdb and avoid annoying prompts
+- name: Setup .monetdb
+  copy:
+    dest: ~/.monetdb
+    content: "user=monetdb\npassword=monetdb\n"
+
+- name: Upgrade packages
+  become: yes
+  apt:
+    # 10800s = 3h
+    cache_valid_time: 10800
+    upgrade: 'yes'
+    #upgrade: dist
+    state: present
+
+# Need build-essential for make, gcc, etc
+- name: Install build-essential
+  become: yes
+  apt:
+    name: 'build-essential'
+    state: present
+
+# Get the tpch-scripts on all machines
+- name: Clone tpch-scripts GitHub repository
+  git:
+    repo: 'https://github.com/MonetDBSolutions/tpch-scripts.git'
+    dest: "{{TPCH_SCRIPTS_BASEDIR}}"

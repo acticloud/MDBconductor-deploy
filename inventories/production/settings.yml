@@ -1,0 +1,3 @@
+all:
+  vars:
+    TPCH_SCALE_FACTOR: 30

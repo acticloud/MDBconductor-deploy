@@ -1,0 +1,50 @@
+---
+
+# Ansible playbook to set up the general things in the whole MDBconductor cluster.
+#
+# We first set a valid hostname, populate /etc/hosts, etc.
+# Some variables, such as `inventory_hostname` are built into Ansible.
+# Others, such as `private_ip`, are extracted from the Terraform state by
+# script `{staging, production}/read_tfstate`.
+# If you haven't run Terraform for a while you can update its state by running
+# `terraform refresh` in '{staging, production}/terra'.
+
+- hosts: conductor minions
+  roles:
+  - common
+  - monetdb
+
+- hosts: minions
+  roles:
+  - tpch
+
+- hosts: conductor
+  tasks:
+  # Should really move this into a role too
+
+  - name: Install Pip3
+    become: yes
+    apt:
+      name: 'python3-pip'
+      state: present
+
+  - name: Install Python packages
+    pip:
+      name:
+      - boto3
+
+  - name: Create .aws
+    file:
+      path: .aws
+      state: directory
+
+  - name: Set AWS region
+    # should really extract this from Terraform. Can't be bothered
+    copy:
+      dest: ~/.aws/config
+      content: "[default]\nregion = eu-central-1"
+
+  # - name: Clone MDBconductor repository
+  #   git:
+  #     repo: 'https://github.com/MonetDBSolutions/MDBconductor.git'
+  #     dest: MDBconductor

@@ -1,0 +1,62 @@
+---
+# Install MonetDB
+# Install the latest release of MonetDB for the minion machines
+# This is basically a translation of https://www.monetdb.org/downloads/deb/ into Ansible
+
+- name: install Apt sources list for MonetDB
+  become: yes
+  template:
+    src: templates/monetdb.list.in
+    dest: /etc/apt/sources.list.d/monetdb.list
+
+- name: install Apt key for MonetDB
+  become: yes
+  apt_key:
+    id: 0583366F
+    url: https://www.monetdb.org/downloads/MonetDB-GPG-KEY
+
+- name: refresh Apt sources
+  become: yes
+  apt:
+    update_cache: true
+
+- name: install MonetDB packages
+  become: yes
+  notify: Restart monetdbd
+  package:
+    name: ['monetdb5-sql', 'monetdb-client']
+    state: latest
+
+# - name: Allow MonetDB daemon to start
+#   become: yes
+#   notify: Restart monetdbd
+#   lineinfile:
+#     path: /etc/default/monetdb5-sql
+#     regex: '^STARTUP='
+#     line: STARTUP="yes"
+
+# A temporary fix for the problem of https://www.monetdb.org/bugzilla/show_bug.cgi?id=6794
+- name: Remove 72_fits.sql
+  become: yes
+  when: MDB_VERSION == 'Nov2019'
+  file:
+    path: /usr/lib/x86_64-linux-gnu/monetdb5/createdb/72_fits.sql
+    state: absent
+
+- name: Add user to group monetdb
+  become: yes
+  when: ansible_user_id != 'root'
+  user:
+    name: "{{ansible_user_id}}"
+    append: yes
+    groups: monetdb
+
+# - name: Check MonetDB listenaddr
+#   command: "monetdbd get listenaddr {{DBFARM}}"
+#   register: check_listenaddr
+
+# - name: Set MonetDB listenaddr to 0.0.0.0 (be careful!)
+#   become: yes
+#   when: check_listenaddr is defined and not '0.0.0.0' in check_listenaddr.stdout_lines[-1]
+#   notify: Restart monetdbd
+#   command: monetdbd set listenaddr=0.0.0.0 {{DBFARM}}

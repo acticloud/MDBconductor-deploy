@@ -1,0 +1,9 @@
+---
+
+
+- name: Restart monetdbd
+  become: yes
+  service:
+    name: monetdb5-sql
+    state: restarted
+    enabled: yes

@@ -1,0 +1,1 @@
+TPCH_DBPATH: "{{DBFARM_BASEDIR}}/SF-{{TPCH_SCALE_FACTOR | replace('.', '_')}}"
