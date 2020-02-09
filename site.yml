@@ -13,9 +13,6 @@
   roles:
   - common
   - monetdb
-
-- hosts: minions
-  roles:
   - tpch
 
 - hosts: conductor
@@ -32,6 +29,8 @@
     pip:
       name:
       - boto3
+      - pymonetdb
+
 
   - name: Create .aws
     file:
@@ -39,10 +38,9 @@
       state: directory
 
   - name: Set AWS region
-    # should really extract this from Terraform. Can't be bothered
     copy:
       dest: ~/.aws/config
-      content: "[default]\nregion = eu-central-1"
+      content: "[default]\nregion = {{aws_region}}"
 
   # - name: Clone MDBconductor repository
   #   git:

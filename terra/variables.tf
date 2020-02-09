@@ -42,7 +42,7 @@ variable ssh_key {}
 # AMI to use.
 # You can use the AWS command line utility to query for a recent image
 # as follows:
-# $ aws ec2 describe-images
+# $ aws ec2 describe-images \
 #       --owners 099720109477  \
 #       --filters  \
 #            "Name=virtualization-type,Values=hvm"  \

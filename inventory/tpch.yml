@@ -1,0 +1,9 @@
+---
+
+all:
+  vars:
+    TPCH_SCALE_FACTOR: 10
+
+conductor:
+  vars:
+    TPCH_SCALE_FACTOR: 0.01

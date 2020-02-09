@@ -40,10 +40,13 @@
     state: present
 
 # Need build-essential for make, gcc, etc
-- name: Install build-essential
+- name: Install packages
   become: yes
   apt:
-    name: 'build-essential'
+    name: 
+    - build-essential
+    - awscli
+    - jq
     state: present
 
 # Get the tpch-scripts on all machines

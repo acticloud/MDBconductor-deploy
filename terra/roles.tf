@@ -9,7 +9,7 @@ resource aws_iam_role conductor_role {
 
 # Allow the conductor_role to start/stop the minions.
 resource aws_iam_role_policy allow_conductor_startstop {
-  name_prefix = "allow_conductor_startstop"
+  name_prefix = "allow_${var.cluster_name}_${var.aws_region}_conductor_startstop"
   role        = aws_iam_role.conductor_role.id
   policy      = <<EOF
 {
@@ -22,7 +22,7 @@ resource aws_iam_role_policy allow_conductor_startstop {
           "ec2:StopInstances",
           "ec2:DescribeInstanceStatus"
       ],
-      "Resource": "arn:aws:ec2:eu-central-1:333323848586:instance/*",
+      "Resource": "arn:aws:ec2:${var.aws_region}:${data.aws_caller_identity.current.account_id}:instance/*",
       "Condition": {
         "StringEquals":{
           "ec2:ResourceTag/cluster":"${var.cluster_name}",

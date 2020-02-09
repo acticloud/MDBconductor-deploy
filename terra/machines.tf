@@ -34,6 +34,9 @@ resource aws_instance large_minion {
   instance_type   = var.large_minion_instance_type
   key_name        = var.ssh_key
   security_groups = [aws_security_group.firewall.name]
+  root_block_device {
+	volume_size = 100
+  }
   tags = {
     Name           = "${var.cluster_name}_large${count.index + 1}",
     cluster        = var.cluster_name,

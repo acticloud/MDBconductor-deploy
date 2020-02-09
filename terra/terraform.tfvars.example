@@ -1,0 +1,26 @@
+# EXAMPLE terraforms.tfvars
+#
+# Provides experiment specific values for the variables
+# defined in variables.tf.
+#
+# Commented settings show the default value.
+
+cluster_name = "joeri"
+
+#aws_region = "eu-central-1"
+
+# The SSH key to be used to steer the MDBconductor VM fleet
+ssh_key = "joeri"
+
+#conductor_instance_type = "t2.micro"
+
+nr_of_small_minions = 3
+#small_minion_instance_type = "t2.micro"
+
+nr_of_large_minions = 2
+#large_minion_instance_type = "t2.small"
+
+# Fairly recent Ubuntu 18.04 LTS image.
+# See the comment in variables.tf for a way to query for this.
+# This is "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20191113"
+ami_id = "ami-09356619876445425"
