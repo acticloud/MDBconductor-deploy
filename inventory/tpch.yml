@@ -2,7 +2,7 @@
 
 all:
   vars:
-    TPCH_SCALE_FACTOR: 10
+    TPCH_SCALE_FACTOR: 30
 
 conductor:
   vars:
