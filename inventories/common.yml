@@ -1,9 +1,0 @@
----
-
-all:
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-    TPCH_SCRIPTS_BASEDIR: "{{ ansible_env.HOME }}/tpch-scripts"
-    MDB_VERSION: Nov2019
-    DBFARM: /var/monetdb5/dbfarm
-    DBFARM_BASEDIR: "{{ ansible_env.HOME }}/dbfarm-{{MDB_VERSION}}/tpch"
