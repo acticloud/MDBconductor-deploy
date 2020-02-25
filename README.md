@@ -1,3 +1,6 @@
+# Acknowledgments
+This project has been funded by the European Unions Horizon 2020 research and innovation programme under Grant Agreement no. 732366 (ACTiCLOUD).
+
 # MDBconductor-deploy
 
 Deploy MDBconductor on AWS using Terraform and Ansible.
